@@ -4,12 +4,22 @@ import { isDestructableTree, setIsDestructableTreeConfig } from 'is-destructable
 import { LibraryLoader } from 'war3-library-loader';
 import { SpellEvent } from 'Global/SpellEvent';
 import { Flamestrike } from 'Spells/Flamestrike';
+import { TalentTreeView } from 'Global/TalentTree/TalentTreeView';
+import { FireMageTalentTree } from 'Classes/FireMageTalentTree';
+
+require("Config");
 
 function tsMain() {
-  print(hello());
+  // print(hello());
 
   SpellEvent.init();
+  TalentTreeView.init();
   Flamestrike.init();
+
+  TimerStart(CreateTimer(), 0.1, false, () => {
+    const fmtt = new FireMageTalentTree(gg_unit_Hblm_0003);
+    TalentTreeView.SetPlayerViewedTree(Player(0), fmtt);
+  })
 }
 
 // Configure libraries

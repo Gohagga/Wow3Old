@@ -6,15 +6,12 @@ export class Flamestrike {
     static init() {
         let t = CreateTrigger();
         SpellEvent.RegisterSpellCast(Flamestrike.spellId, () => {
-            print("Flamestrike cast");
         });
 
         SpellEvent.RegisterSpellEffect(Flamestrike.spellId, () => {
-            print("Flamestrike effect");
         });
 
         SpellEvent.RegisterSpellEnd(Flamestrike.spellId, () => {
-            print("Flamestrike end");
         });
     }
 }
