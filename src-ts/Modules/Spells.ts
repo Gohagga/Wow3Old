@@ -1,10 +1,6 @@
-import { Flamestrike } from "../Spells/Flamestrike";
+import { FireBlast } from "Spells/Mage Fire/FireBlast";
 
-export namespace Module {
-    export class Spells {
-
-        static init() {
-            Flamestrike.init();
-        }
-    }
+export function InitializeSpells() {
+    print("initializing shit spells");
+    FireBlast.init();
 }

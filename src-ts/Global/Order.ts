@@ -1,4 +1,4 @@
-enum Order {
+export enum Order {
     ABSORB = 852529,
     ACIDBOMB = 852662,
     ACOLYTEHARVEST = 852185,
