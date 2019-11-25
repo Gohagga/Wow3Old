@@ -6,6 +6,7 @@ import { SpellEvent } from 'Global/SpellEvent';
 import { TalentTreeView } from 'Global/TalentTree/TalentTreeView';
 import { FireMageTalentTree } from 'Classes/FireMageTalentTree';
 import { InitializeSpells } from 'Modules/Spells';
+import { HeroSelect } from 'Global/HeroSelect';
 
 require("Config");
 
@@ -14,12 +15,9 @@ function tsMain() {
 
   SpellEvent.init();
   TalentTreeView.init();
+  HeroSelect.init();
 
   TimerStart(CreateTimer(), 0.1, false, () => {
-    const fmtt = new FireMageTalentTree(gg_unit_Hblm_0003);
-    TalentTreeView.SetPlayerViewedTree(Player(0), fmtt);
-    
-    print("initialize spells?")
     InitializeSpells();
   })
 }

@@ -1,32 +1,59 @@
 class Units {
     static BloodMage            = FourCC("Hblm");
+    static MageFire                 = FourCC("H000");
 }
 
 class Spells {
-    static WildGrowth           = FourCC("A999");
-    static Nourish              = FourCC("A999");
-    static Rejuvenation         = FourCC("A999");
-    static Swiftmend            = FourCC("A999");
-    static ChaosBolt            = FourCC("A999");
-    static Combustion           = FourCC("A999");
-    static Conflagrate          = FourCC("A999");
-    static CreateHealthstone    = FourCC("A999");
-    static CurseOfTheElements   = FourCC("A999");
-    static EntanglingRoots      = FourCC("A999");
-    static FireBlast            = FourCC("A999");
-    static Fireball             = FourCC("A999");
-    static Flamestrike          = FourCC("Ahfs");
-    static Immolate             = FourCC("A999");
-    static Incinerate           = FourCC("A999");
-    static Ironbark             = FourCC("A999");
-    static Pyroblast            = FourCC("A999");
-    static Scorch               = FourCC("A999");
-    static Shadowfury           = FourCC("A999");
-    static SoulFire             = FourCC("A999");
-    static SummonFelguard       = FourCC("A999");
-    static SummonImp            = FourCC("A999");
-    static Tranquility          = FourCC("A999");
-    static Revitalize           = FourCC("A999");
+    static WildGrowth               = FourCC("A005");  
+    static Nourish                  = FourCC("A006");
+    static Rejuvenation             = FourCC("A007");  
+    static Swiftmend                = FourCC("A008");  
+    static ChaosBolt                = FourCC("A009");  
+    static Combustion               = FourCC("A00A");  
+    static Conflagrate              = FourCC("A00B");  
+    static CreateHealthstone        = FourCC("A00C");          
+    static CurseOfTheElements       = FourCC("A00D");          
+    static EntanglingRoots          = FourCC("A00E");      
+    static FireBlast                = FourCC("A00F");  
+    static Fireball                 = FourCC("A00G");
+    static Flamestrike              = FourCC("A00H");  
+    static Immolate                 = FourCC("A00I");
+    static Incinerate               = FourCC("A00J");  
+    static Ironbark                 = FourCC("Ax0F");
+    static Shadowfury               = FourCC("Ax1M");  
+    static SoulFire                 = FourCC("Ax1D");
+    static SummonFelguard           = FourCC("Ax1R");      
+    static SummonImp                = FourCC("Ax1P");  
+    static Tranquility              = FourCC("A00K");  
+    static Revitalize               = FourCC("A00L");  
+    static CrusaderStrike           = FourCC("A00M");      
+    static WordOfGlory              = FourCC("A00N");  
+    static Judgement                = FourCC("A00O");  
+    static AvengersShield           = FourCC("A00P");      
+    static DivineProtection         = FourCC("A00Q");      
+    static Vindication              = FourCC("A00R");  
+    static DevotionAura             = FourCC("A00S");  
+    static Scorch                   = FourCC("A00V");
+    static ScorchInstant            = FourCC("A00W");      
+    static Pyroblast                = FourCC("A00X");  
+    static Ignite                   = FourCC("A010");
+}
+
+class Auras {
+    static WildGrowth               = FourCC("A012");    
+    static HolyPower                = FourCC("A00T");
+    static HotStreak                = FourCC("A00Z");
+    static Ignite                   = FourCC("A011");
+}
+
+class Buffs {
+    static WildGrowth               = FourCC("B000");    
+    static HolyPower                = FourCC("B001");    
+    static DivineProtection         = FourCC("B003");        
+    static HotStreak                = FourCC("B004");    
+    static HeatingUp                = FourCC("B006");    
+    static ManaShield               = FourCC("BNms");    
+    static Ignite                   = FourCC("B005");
 }
 
 let path = "ReplaceableTextures\\CommandButtons\\"

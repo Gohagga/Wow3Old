@@ -1,19 +1,22 @@
 import { TalentTree } from "./TalentTree/TalentTree";
 import { TalentTreeView } from "./TalentTree/TalentTreeView";
+import { FireMageTalentTree } from "Classes/FireMageTalentTree";
 
 export class HeroSelect {
     static PlayerHero: unit[] = [];
 
     static heroSold(): void {
+
         let u = GetTriggerUnit();
         let hero = GetSoldUnit();
         let owner = GetOwningPlayer(hero);
         let id = GetUnitTypeId(hero);
         let talentTree = null;
+        print("Hero sold", GetUnitName(hero));
 
-        if (id == Units.BloodMage) {
+        if (id == Units.MageFire) {
 
-            talentTree = new TalentTree(hero);
+            talentTree = new FireMageTalentTree(hero);
         }
 
         if (talentTree != null)
@@ -28,16 +31,7 @@ export class HeroSelect {
     static init() {
         let t = CreateTrigger();
         TriggerRegisterAnyUnitEventBJ(t, EVENT_PLAYER_UNIT_SELL);
-        TriggerAddAction(t, () => this.heroSold)
-
-        t = CreateTrigger()
-        TriggerRegisterAnyUnitEventBJ(t, EVENT_PLAYER_HERO_LEVEL);
-        TriggerAddAction(t, () => {
-            let u = GetTriggerUnit();
-
-            // TODO: Increase number of points for triggering unit.
-            // if (TalentTree[u] and TalentTree[u].pointsAvailable) then TalentTree[u].pointsAvailable = TalentTree[u].pointsAvailable + 1 }
-        })
+        TriggerAddAction(t, () => this.heroSold())
     }
 
 }
