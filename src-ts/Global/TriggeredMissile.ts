@@ -21,14 +21,15 @@ export class TriggeredMissile {
         this.orderId = orderId;
     }
 
-    public CastAtTargetAsUnitAndDo(target: unit, caster: unit, doCallback: TriggeredMissileCallback) {
+    public CastAtTargetAndDo(target: unit, doCallback: TriggeredMissileCallback) {
         const owner = GetOwningPlayer(this.caster);
-        const dummy = new Unit(MapPlayer.fromHandle(owner), TriggeredMissile.DummyId, GetUnitX(caster), GetUnitY(caster), 0.0);
-        dummy.addAbility(this.spellId);
-        dummy.setAbilityLevel(this.spellId, this.level);
-        TriggeredMissile._missileData[GetHandleId(dummy.handle)] = this;
+        const dummy = CreateUnit(owner, TriggeredMissile.DummyId, GetUnitX(this.caster), GetUnitY(this.caster), 0);
+        UnitAddAbility(dummy, this.spellId);
+        SetUnitAbilityLevel(dummy, this.spellId, this.level);
+        TriggeredMissile._missileData[GetHandleId(dummy)] = this;
+        
         this.doCallback = doCallback;
-        dummy.issueTargetOrder(this.orderId, Widget.fromHandle(target));
+        IssueTargetOrderById(dummy, this.orderId, target);
     }
 
     public static init(dummyId: number) {
@@ -43,6 +44,6 @@ export class TriggeredMissile {
                 data.doCallback(data)
                 delete TriggeredMissile._missileData[sourceId];
             }
-        })
+        });
     }
 }
