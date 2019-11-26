@@ -6,6 +6,7 @@ import { Scorch, ScorchConfig } from "Spells/Mage Fire/Scorch";
 import { Ignite, IgniteConfig } from "Spells/Mage Fire/Ignite";
 import { FireBlast, FireBlastConfig } from "Spells/Mage Fire/FireBlast";
 import { PyroblastConfig, Pyroblast } from "Spells/Mage Fire/Pyroblast";
+import { HeroStats } from "Global/HeroStats";
 
 require("Config")
 
@@ -84,7 +85,7 @@ export class FireMageTalentTree extends TalentTree {
                 Icon: Icons.Ignite,
                 OnActivate: (unit: unit) => {
                     UnitAddAbility(unit, Spells.Ignite);
-                    // HeroStats:Mastery(caster, 10);
+                    HeroStats.From(unit).Mastery(10);
                     Ignite.UpdateUnitConfig<IgniteConfig>(unit, (cfg) => cfg.DamageAmount = (i*0.1));
                 },
                 Dependency: { down: 1 }
