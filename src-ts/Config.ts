@@ -1,6 +1,7 @@
 class Units {
-    static BloodMage            = FourCC("Hblm");
+    static BloodMage                = FourCC("Hblm");
     static MageFire                 = FourCC("H000");
+    static Dummy                    = FourCC("nDUM");
 }
 
 class Spells {
@@ -44,6 +45,11 @@ class Auras {
     static HolyPower                = FourCC("A00T");
     static HotStreak                = FourCC("A00Z");
     static Ignite                   = FourCC("A011");
+}
+
+class Dummies {
+    static AvengersShield           = FourCC("A00U");
+    static Pyroblast                = FourCC("A00Y");
 }
 
 class Buffs {
