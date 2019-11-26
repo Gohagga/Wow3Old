@@ -1,4 +1,5 @@
 export class HeroStats {
+
     private static  _crit: Record<number, number> = {};
     private static  _critDamage: Record<number, number> = {};
     private static  _haste: Record<number, number> = {};
@@ -17,6 +18,10 @@ export class HeroStats {
 
     constructor(unit: unit) {
         this.unitId = GetHandleId(unit);
+    }
+
+    public static From(unit: unit) {
+        return new HeroStats(unit);
     }
 
     public Crit(set?: number) {

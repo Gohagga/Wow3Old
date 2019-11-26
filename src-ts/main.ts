@@ -7,6 +7,8 @@ import { TalentTreeView } from 'Global/TalentTree/TalentTreeView';
 import { FireMageTalentTree } from 'Classes/FireMageTalentTree';
 import { InitializeSpells } from 'Modules/Spells';
 import { HeroSelect } from 'Global/HeroSelect';
+import { TriggeredMissile } from 'Global/TriggeredMissile';
+import { DamageDisplay } from 'Global/DamageDisplay';
 
 require("Config");
 
@@ -16,6 +18,8 @@ function tsMain() {
   SpellEvent.init();
   TalentTreeView.init();
   HeroSelect.init();
+  TriggeredMissile.init(Units.Dummy);
+  DamageDisplay.init();
 
   TimerStart(CreateTimer(), 0.1, false, () => {
     InitializeSpells();
