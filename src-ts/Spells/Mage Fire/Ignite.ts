@@ -1,5 +1,8 @@
 import { UnitConfigurable } from "Global/UnitConfigurable";
 import { HeroStats } from "Global/HeroStats";
+import { GROUP } from "Modules/Globals";
+import { DamageDisplay } from "Global/DamageDisplay";
+import { HotStreak } from "./HotStreak";
 
 export type IgniteConfig = {
     Duration: number,
@@ -16,7 +19,7 @@ export class Ignite extends UnitConfigurable {
     public static readonly Sfx = "Environment/SmallBuildingFire/SmallBuildingFire2.mdl";
     private static readonly DefaultConfig: IgniteConfig = {
         Duration: 9,
-        DamageAmount: 0,
+        DamageAmount: 1,
         Wildfire: false,
         DamageTickTime: 1.0,
         SpreadTickTime: 2.0,
@@ -32,86 +35,69 @@ export class Ignite extends UnitConfigurable {
     private bank: number;
     private timer = CreateTimer();
     private ticks: number;
-    private spreadTicks?: number;
-    private spreadRadius?: number;
+    private spreadTicks: number | null;
+    private spreadRadius: number | null;
+    private ticksToSpread = 0;
 
-    constructor({caster, target, bank, ticks} : { caster: unit, target: unit, bank: number, ticks: number }) {
+    constructor({caster, target, bank, ticks, spreadTicks, spreadRadius} : { caster: unit, target: unit, bank: number, ticks: number, spreadTicks: number | null, spreadRadius: number | null }) {
         super();
 
         this.caster = caster,
         this.target = target,
         this.bank = bank,
         this.ticks = ticks,
+        this.spreadTicks = spreadTicks;
+        this.spreadRadius = spreadRadius;
+        this.ticksToSpread = 0;
         this.timer = CreateTimer();
     }
 
-    public Apply(target: unit): void {
-        
-        /*
-        const casterId = GetHandleId(this.caster);
-        const targetId = GetHandleId(target);
-        this.target = target;
-        let instance: Ignite;
-        // If the caster never had any ignite casts at all, create a new target list
-        if (!(casterId in Ignite._ignites)) Ignite._ignites[casterId] = {};
-        
-        // If the caster has an active Ignite on the target
-        if (targetId in Ignite._ignites[casterId]) {
-            instance = Ignite._ignites[casterId][targetId];
-
-            // Pause the existing timer
-            PauseTimer(instance.timer);
-            instance.bank += this.bank;
-            instance.ticks = this.data.Duration;
-        } else {
-            instance = Object.assign({}, this);
-            instance.timer = CreateTimer();
-        }
-
-        if (this.data.Wildfire) {
-            if (!instance.spreadTimer) {
-                instance.spreadTimer = CreateTimer();
-                TimerStart(instance.spreadTimer, this.data.SpreadTickTime, true, () => this.Spread());
-            }
-        }*/
+    public static AddIfHasAbility(target: unit, caster: unit, damageDealt: number) {
+        if (GetUnitAbilityLevel(caster, this.SpellId) < 1) return;
+        return this.Add(target, caster, damageDealt);
     }
 
-    public static Add(target: unit, caster: unit, damageDealt: number) {
+    public static Add(target: unit, caster: unit, damageDealt: number): Ignite {
         
-        print("Ignite.Add");
-        if (GetUnitAbilityLevel(caster, this.SpellId) < 1) return;
-        print("has Ignite spell");
         const data = this.GetUnitConfig<IgniteConfig>(caster);
         const stats = new HeroStats(caster);
-        const damage = damageDealt * data.DamageAmount * (stats.Mastery() * 0.01 + 1)
+        const damage = damageDealt * data.DamageAmount * (stats.Mastery() * 0.01 + 1);
         
         const casterId = GetHandleId(caster);
-        const targetId = GetHandleId(caster);
+        const targetId = GetHandleId(target);
         let instance: Ignite;
-        if (!(casterId in this._ignites)) this._ignites[casterId] = {}
+        if (!(casterId in this._ignites)) this._ignites[casterId] = {};
+
+        let spreadTicks = null;
+        let spreadRadius = null;
+        if (data.Wildfire) {
+            spreadTicks = data.SpreadTickTime;
+            spreadRadius = data.SpreadRadius;
+        }
 
         if (targetId in this._ignites[casterId]) {
             instance = this._ignites[casterId][targetId];
 
             // If target already has ignite, just add the damage to the bank
-            PauseTimer(instance.timer);
+            // PauseTimer(instance.timer);
             instance.bank += damage;
             instance.ticks = data.Duration;
+            instance.spreadTicks = spreadTicks;
+            instance.spreadRadius = spreadRadius;
+
         } else {
+            
             instance = new Ignite({
                 caster: caster,
                 target: target,
                 bank: damage,
                 ticks: data.Duration,
+                spreadTicks: spreadTicks,
+                spreadRadius: spreadRadius
             });
+            TimerStart(instance.timer, data.DamageTickTime, true, () => instance.Damage())
         }
 
-        if (data.Wildfire) {
-            instance.spreadTicks = data.SpreadTickTime;
-            instance.spreadRadius = data.SpreadRadius;
-        }
-
-        TimerStart(instance.timer, data.DamageTickTime, true, () => instance.Damage())
 
         this._ignites[casterId][targetId] = instance;
         return instance;
@@ -119,16 +105,23 @@ export class Ignite extends UnitConfigurable {
 
     private Damage(): void {
 
-        print("Ignite.Damage");
         const damageTick = this.bank / this.ticks;
         this.bank -= damageTick;
         this.ticks--;
 
         if (this.ticks > 0) {
+            print("doing ignite damage");
             UnitDamageTarget(this.caster, this.target, 1 + damageTick, false, false, Ignite.AttackType, Ignite.DamageType, WEAPON_TYPE_WHOKNOWS);
+            print("adding hotstreak: ", DamageDisplay.EventDamageWasCrit);
+            if (DamageDisplay.EventDamageWasCrit) {
+                HotStreak.Add(this.caster);
+            }
             DestroyEffect(AddSpecialEffectTarget(Ignite.Sfx, this.target, "head"));
-            if (this.spreadTicks && this.ticks % this.spreadTicks) {
-                this.Spread();
+            if (this.spreadTicks) {
+                this.ticksToSpread++;
+                if (this.ticksToSpread % this.spreadTicks == 0) {
+                    this.Spread();
+                }
             }
         } else {
             PauseTimer(this.timer);
@@ -139,12 +132,55 @@ export class Ignite extends UnitConfigurable {
 
     private Spread(): void {
         
-        print("Ignite.Spread");
+        GroupEnumUnitsInRange(GROUP, GetUnitX(this.target), GetUnitY(this.target), this.spreadRadius || 0, null);
+        const casterId = GetHandleId(this.caster);
+        const data = Ignite.GetUnitConfig<IgniteConfig>(this.caster);
+
+        let u = FirstOfGroup(GROUP);
+        let selected: unit | null = null;
+        let instance: Ignite;
+        while (u && !selected) {
+            GroupRemoveUnit(GROUP, u);
+
+            // If unit condition isn't satisfied, continue
+            if (IsUnitType(u, UNIT_TYPE_MAGIC_IMMUNE) || GetWidgetLife(u) <= 0.405) continue;
+            // Try to get picked up unit's Ignite instance
+            instance = Ignite._ignites[casterId][GetHandleId(u)];
+            // If picked unit already has ignite, spread to it only if its bank is less than this
+            if (instance && instance.bank < this.bank) selected = u;
+            // Otherwise only spread to picked unit if it doesn't have an Ignite effect from this caster at all
+            else if (!instance) selected = u;
+
+            u = FirstOfGroup(GROUP);
+        }
+
+        if (selected) {
+
+            const selectedId = GetHandleId(selected);
+            if (selectedId in Ignite._ignites[casterId]) {
+                Ignite._ignites[casterId][selectedId].bank = this.bank;
+                Ignite._ignites[casterId][selectedId].ticks = this.ticks;
+                Ignite._ignites[casterId][selectedId].ticksToSpread = 0;
+            } else {
+                const newIgnite = new Ignite({
+                        caster: this.caster,
+                        target: selected,
+                        bank: this.bank,
+                        ticks: this.ticks,
+                        spreadTicks: this.spreadTicks,
+                        spreadRadius: this.spreadRadius
+                    });
+        
+                TimerStart(newIgnite.timer, data.DamageTickTime, true, () => newIgnite.Damage())
+                Ignite._ignites[casterId][selectedId] = newIgnite;
+            }
+
+        }
     }
 
     static init(spellId: number) {
         this.SpellId = spellId;
-        this.SetDefaultConfig(this.DefaultConfig);
+        this.SetDefaultConfig<IgniteConfig>(this.DefaultConfig);
         const t = CreateTrigger();
         TriggerRegisterAnyUnitEventBJ(t, EVENT_PLAYER_UNIT_DAMAGED)
         TriggerAddAction(t, () => {

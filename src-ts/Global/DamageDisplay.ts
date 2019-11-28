@@ -1,9 +1,13 @@
 import { HeroStats } from "./HeroStats";
 
 export class DamageDisplay {
-    private static EventDamagedAfterAmount: number | null;
-    private static EventDamageWasCrit: boolean | null = false;
-    private static EventDamageWasBlocked: boolean | null = false;
+    private static DamagedAfterAmount: number | null;
+    private static DamageWasCrit: boolean | null = false;
+    private static DamageWasBlocked: boolean | null = false;
+
+    public static get EventDamagedAfterAmount() { return this.DamagedAfterAmount || 0; }
+    public static get EventDamageWasCrit() { return this.DamageWasCrit || false; }
+    public static get EventDamageWasBlocked() { return this.DamageWasBlocked || false; }
 
     private static TTXVEL = 0.083203125 * Cos(90*bj_DEGTORAD);
     private static TTYVEL = 0.083203125 * Sin(90*bj_DEGTORAD);
@@ -14,7 +18,8 @@ export class DamageDisplay {
         TriggerAddAction(t, () => {
 
             let damage = GetEventDamage();
-            this.EventDamagedAfterAmount = null;
+            this.DamageWasCrit = false;
+            this.DamagedAfterAmount = null;
             if (damage == 0) return;
 
             const source = GetEventDamageSource();
@@ -30,12 +35,13 @@ export class DamageDisplay {
             if (attackType == ATTACK_TYPE_MELEE) rgb = [ 100, 100, 100 ];
             else if (attackType == ATTACK_TYPE_MELEE) rgb = [ 25, 50, 100 ];
 
+            print("checking damage was crit");
             const stats = new HeroStats(source);
             multiplier = stats.CritChance();
             if (multiplier > 1.0) {
                 size *= multiplier;
                 damage *= multiplier;
-                this.EventDamageWasCrit = true;
+                this.DamageWasCrit = true;
                 rgb[0] = 100;
                 rgb[1] = rgb[1] * 0.3;
                 rgb[2] = rgb[2] * 0.3;
@@ -43,7 +49,7 @@ export class DamageDisplay {
 
             let dString = math.floor(damage)+"";
             BlzSetEventDamage(damage);
-            this.EventDamagedAfterAmount = damage;
+            this.DamagedAfterAmount = damage;
             CreateTextTagUnitBJ(dString, target, 50.00, size, rgb[0], rgb[1], rgb[2], 0)
             if (owner == GetLocalPlayer()) {
                 SetTextTagVelocity(bj_lastCreatedTextTag, this.TTXVEL, this.TTYVEL)

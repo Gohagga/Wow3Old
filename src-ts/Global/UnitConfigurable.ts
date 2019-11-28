@@ -1,5 +1,5 @@
 export class UnitConfigurable {
-    private static _config: Record<number, any> = {};
+    private static _config: Record<number, any>;
     private static _defaultConfig: any;
 
     public static GetUnitConfig<T>(unit: unit): T {
@@ -24,5 +24,7 @@ export class UnitConfigurable {
 
     public static SetDefaultConfig<T>(data: T) {
         this._defaultConfig = data;
+        let record: Record<number, T> = {};
+        this._config = record;
     }
 }

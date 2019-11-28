@@ -9,6 +9,7 @@ import { InitializeSpells } from 'Modules/Spells';
 import { HeroSelect } from 'Global/HeroSelect';
 import { TriggeredMissile } from 'Global/TriggeredMissile';
 import { DamageDisplay } from 'Global/DamageDisplay';
+import { InitializeGlobals } from 'Modules/Globals';
 
 require("Config");
 
@@ -22,6 +23,7 @@ function tsMain() {
   DamageDisplay.init();
 
   TimerStart(CreateTimer(), 0.1, false, () => {
+    InitializeGlobals();
     InitializeSpells();
   })
 }

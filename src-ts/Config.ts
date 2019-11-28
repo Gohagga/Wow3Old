@@ -106,3 +106,17 @@ class Icons {
     static CriticalMass             = path + "BTNability_mage_firestarter.blp";
     static Incinerate               = path + "BTNIncinerateWoW.blp";
 }
+
+path = "Models/"
+class Models {
+    static Rejuvenation             = path + "GreenHealthSpinny20.mdl";
+    static Rejuvenation2            = path + "GreenHealthSpinny22.mdl";
+    static Swiftmend                = path + "Green Light.mdl";
+    static Nourish                  = path + "Healing Surge_01.mdl";
+    static Tranquility              = path + "AIreTarget_Green.mdl";
+    static Radiance                 = path + "Radiance Holy.mdl";
+    static HotStreak                = path + "DoomTarget_01.mdl";
+    static HeatingUp                = "Abilities/Spells/Orc/SpiritLink/SpiritLinkTarget.mdl";
+    static AirstrikeRocket          = path + "Airstrike Rocket.mdl";
+    static FireCrescent             = path + "Fire Crescent Tailed.mdl";
+}

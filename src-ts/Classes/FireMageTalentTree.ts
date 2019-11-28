@@ -10,10 +10,6 @@ import { HeroStats } from "Global/HeroStats";
 
 require("Config")
 
-function SetSpellConfig() {
-
-}
-
 export class FireMageTalentTree extends TalentTree {
     readonly Id: number = 0;
     readonly Columns: number = 5;
@@ -85,7 +81,7 @@ export class FireMageTalentTree extends TalentTree {
                 Icon: Icons.Ignite,
                 OnActivate: (unit: unit) => {
                     UnitAddAbility(unit, Spells.Ignite);
-                    HeroStats.From(unit).Mastery(10);
+                    // print(HeroStats.From(unit).Mastery(10));
                     Ignite.UpdateUnitConfig<IgniteConfig>(unit, (cfg) => cfg.DamageAmount = (i*0.1));
                 },
                 Dependency: { down: 1 }
@@ -98,8 +94,11 @@ export class FireMageTalentTree extends TalentTree {
             Description: "Every 2 sec, your Ignites may spread to another nearby enemy.",
             Icon: Icons.Wildfire,
             Dependency: { right: 1 },
-            OnActivate: (unit: unit) => 
+            OnActivate: (unit: unit) => {
                 Ignite.UpdateUnitConfig<IgniteConfig>(unit, (cfg) => cfg.Wildfire = true)
+                print(Ignite.GetUnitConfig<IgniteConfig>(unit).Wildfire, "WILDFIRE");
+            }
+
         });
 
         // Hot Streak
