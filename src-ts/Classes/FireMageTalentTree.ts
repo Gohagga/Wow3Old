@@ -7,6 +7,7 @@ import { Ignite, IgniteConfig } from "Spells/Mage Fire/Ignite";
 import { FireBlast, FireBlastConfig } from "Spells/Mage Fire/FireBlast";
 import { PyroblastConfig, Pyroblast } from "Spells/Mage Fire/Pyroblast";
 import { HeroStats } from "Global/HeroStats";
+import { LastTarget } from "Global/LastTarget";
 
 require("Config")
 
@@ -30,7 +31,6 @@ export class FireMageTalentTree extends TalentTree {
             Icon: Icons.FireBlast,
             Dependency: { down: 1 },
             OnActivate: (unit: unit) => { 
-                print(GetObjectName(Spells.FireBlast));
                 UnitAddAbility(unit, Spells.FireBlast);
             },
         });
@@ -39,7 +39,12 @@ export class FireMageTalentTree extends TalentTree {
             Name: "Scorch",
             Description: "Scorch the last targeted enemy with fire damage.|n|n|cffffd9b3Cast time: 2 sec.",
             Icon: Icons.Scorch,
-            OnActivate: (unit: unit) => UnitAddAbility(unit, Spells.Scorch),
+            OnActivate: (unit: unit) => {
+                UnitAddAbility(unit, Spells.ScorchInstant)
+                LastTarget.Register(unit, (caster: unit, target: unit) => {
+                    return IsUnitEnemy(target, GetOwningPlayer(caster));
+                });
+            },
         });
 
         // Pyroblast
@@ -96,7 +101,6 @@ export class FireMageTalentTree extends TalentTree {
             Dependency: { right: 1 },
             OnActivate: (unit: unit) => {
                 Ignite.UpdateUnitConfig<IgniteConfig>(unit, (cfg) => cfg.Wildfire = true)
-                print(Ignite.GetUnitConfig<IgniteConfig>(unit).Wildfire, "WILDFIRE");
             }
 
         });

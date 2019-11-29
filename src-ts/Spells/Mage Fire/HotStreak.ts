@@ -38,21 +38,18 @@ export class HotStreak extends UnitConfigurable {
 
         const lvl = GetUnitAbilityLevel(caster, this.SpellId);
         const data = HotStreak.GetUnitConfig<HotStreakConfig>(caster);
-        print("Hotstreak check", lvl);
         if (lvl > 0 && lvl < 3) {
 
             let instance: HotStreak;
             const casterId = GetHandleId(caster);
             if (casterId in this._hotStreaks) {
 
-                print("adding level");
                 instance = this._hotStreaks[casterId];
                 DestroyEffect(instance.sfx);
                 PauseTimer(instance.expireTimer);
                 instance.sfx = AddSpecialEffectTarget(data.Sfx[lvl-1], caster, data.Attach[lvl-1]);
             } else {
 
-                print("New hotstreak!");
                 instance = new HotStreak(caster, data.Sfx[lvl-1], data.Attach[lvl-1]);
             }
             UnitRemoveAbility(caster, this.Buff1);
@@ -61,18 +58,39 @@ export class HotStreak extends UnitConfigurable {
         }
     }
 
+    public static HeatUp(caster: unit) {
+
+        const lvl = GetUnitAbilityLevel(caster, this.SpellId);
+        if (lvl == 1) {
+
+            const data = HotStreak.GetUnitConfig<HotStreakConfig>(caster);
+            let instance: HotStreak;
+            const casterId = GetHandleId(caster);
+            if (casterId in this._hotStreaks) {
+
+                instance = this._hotStreaks[casterId];
+                DestroyEffect(instance.sfx);
+                PauseTimer(instance.expireTimer);
+                instance.sfx = AddSpecialEffectTarget(data.Sfx[0], caster, data.Attach[0]);
+            } else {
+
+                instance = new HotStreak(caster, data.Sfx[0], data.Attach[0]);
+            }
+            UnitRemoveAbility(caster, this.Buff1);
+            SetUnitAbilityLevel(caster, this.SpellId, 2);
+            TimerStart(instance.expireTimer, data.Duration[0], false, () => instance.Remove());
+        }
+    }
+
     public static Consume(caster: unit) {
 
-        print("Consume HotStreak");
         if (GetUnitAbilityLevel(caster, this.SpellId) == 3) {
-            print("Has ability");
             const casterId = GetHandleId(caster);
             if (casterId in this._hotStreaks) {
                 this._hotStreaks[casterId].Remove();
                 return true;
             }
         }
-        print("Has no ability, returning false.");
         return false;
     }
 
@@ -88,7 +106,6 @@ export class HotStreak extends UnitConfigurable {
         this.Buff1 = heatingUpBuffId;
         this.Buff2 = hotStreakBuffId;
 
-        print(auraId, heatingUpBuffId, hotStreakBuffId);
 
         this.SetDefaultConfig<HotStreakConfig>(this.DefaultConfig);
         const t = CreateTrigger()

@@ -12,7 +12,6 @@ export class HeroSelect {
         let owner = GetOwningPlayer(hero);
         let id = GetUnitTypeId(hero);
         let talentTree = null;
-        print("Hero sold", GetUnitName(hero));
 
         if (id == Units.MageFire) {
 
@@ -26,6 +25,7 @@ export class HeroSelect {
             RemoveUnit(this.PlayerHero[GetPlayerId(owner)])
         
         UnitAddType(hero, UNIT_TYPE_PEON)
+        SelectUnitForPlayerSingle(hero, owner);
     }
 
     static init() {

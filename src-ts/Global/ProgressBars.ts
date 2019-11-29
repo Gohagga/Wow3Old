@@ -88,7 +88,7 @@ export class ProgressBar {
 
 export class CastBar extends ProgressBar {
     private spellId: number = 0;
-    private static instance: Record<number, CastBar> = {};
+    private static instance: Record<number, number> = {};
 
     constructor(unit: unit) {
         super(unit);
@@ -103,14 +103,18 @@ export class CastBar extends ProgressBar {
 
         if (this.done) {
             TimerStart(this.timer2, 0.01, true, () => this.UpdatePercentage());
-            CastBar.instance[GetHandleId(this.unit)] = this;
+            if (spellId) CastBar.instance[GetHandleId(this.unit)] = spellId;
 
             if (castTime < 0.15) DestroyEffect(this.sfx);
         }
     }
 
     public static GetUnitCurrentSpellId(unit: unit): number {
-        return CastBar.instance[GetHandleId(unit)].spellId || -1;
+        const unitId = GetHandleId(unit);
+        if (unitId in CastBar.instance) {
+            return CastBar.instance[unitId];
+        }
+        return -1;
     }
 
     public Finish() {

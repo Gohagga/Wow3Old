@@ -39,10 +39,11 @@ export class Pyroblast extends UnitConfigurable {
             const stats = new HeroStats(caster);
             let damage = GetHeroInt(caster, true) * data.DamageAmount;
             let castTime = data.CastTime / stats.Haste();
-            
+
+            if (CastBar.GetUnitCurrentSpellId(caster) == this.SpellId) return;
             if (HotStreak.Consume(caster)) {
 
-                IssueImmediateOrderById(caster, Order.STANDDOWN);
+                IssueImmediateOrderById(caster, Order.STOP);
                 SetUnitAnimation(caster, "spell");
                 const missile = new TriggeredMissile(caster, this.DummyId, this.DummyOrder, 1);
                 missile.CastAtTargetAndDo(target, (m) => {
@@ -59,7 +60,7 @@ export class Pyroblast extends UnitConfigurable {
                 cb.CastSpell(this.SpellId, castTime, () => {
                     cb.Finish();
     
-                    IssueImmediateOrderById(caster, Order.STANDDOWN);
+                    IssueImmediateOrderById(caster, Order.STOP);
                     SetUnitAnimation(caster, "spell");
                     const missile = new TriggeredMissile(caster, this.DummyId, this.DummyOrder, 1);
                     missile.CastAtTargetAndDo(target, (m) => {

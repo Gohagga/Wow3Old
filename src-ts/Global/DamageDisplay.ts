@@ -35,7 +35,6 @@ export class DamageDisplay {
             if (attackType == ATTACK_TYPE_MELEE) rgb = [ 100, 100, 100 ];
             else if (attackType == ATTACK_TYPE_MELEE) rgb = [ 25, 50, 100 ];
 
-            print("checking damage was crit");
             const stats = new HeroStats(source);
             multiplier = stats.CritChance();
             if (multiplier > 1.0) {

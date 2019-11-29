@@ -110,11 +110,9 @@ export class Ignite extends UnitConfigurable {
         this.ticks--;
 
         if (this.ticks > 0) {
-            print("doing ignite damage");
             UnitDamageTarget(this.caster, this.target, 1 + damageTick, false, false, Ignite.AttackType, Ignite.DamageType, WEAPON_TYPE_WHOKNOWS);
-            print("adding hotstreak: ", DamageDisplay.EventDamageWasCrit);
             if (DamageDisplay.EventDamageWasCrit) {
-                HotStreak.Add(this.caster);
+                HotStreak.HeatUp(this.caster);
             }
             DestroyEffect(AddSpecialEffectTarget(Ignite.Sfx, this.target, "head"));
             if (this.spreadTicks) {
@@ -187,7 +185,7 @@ export class Ignite extends UnitConfigurable {
             const source = GetEventDamageSource();
             const type = BlzGetEventDamageType();
             if (type == DAMAGE_TYPE_NORMAL) {
-                Ignite.Add(BlzGetEventDamageTarget(), source, GetEventDamage())
+                Ignite.AddIfHasAbility(BlzGetEventDamageTarget(), source, GetEventDamage())
             }
         });
     }
