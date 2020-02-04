@@ -21,7 +21,7 @@ function tsMain() {
   TriggeredMissile.init(Units.Dummy);
   DamageDisplay.init();
   Interruptable.init();
-  LastTarget.init();
+  LastTarget.init(Models.TargetCircle);
   SimError.init();
 
   TimerStart(CreateTimer(), 0.1, false, () => {

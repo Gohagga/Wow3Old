@@ -38,6 +38,8 @@ class Spells {
     static ScorchInstant            = FourCC("A00W");      
     static Pyroblast                = FourCC("A00X");  
     static Ignite                   = FourCC("A010");
+    static MortalStrike             = FourCC("A015");
+    static Slam                     = FourCC("A016");
 }
 
 class Auras {
@@ -60,6 +62,7 @@ class Buffs {
     static HeatingUp                = FourCC("B006");    
     static ManaShield               = FourCC("BNms");    
     static Ignite                   = FourCC("B005");
+    static Immolation               = FourCC("BEim");
 }
 
 let path = "ReplaceableTextures\\CommandButtons\\"
@@ -119,4 +122,5 @@ class Models {
     static HeatingUp                = "Abilities/Spells/Orc/SpiritLink/SpiritLinkTarget.mdl";
     static AirstrikeRocket          = path + "Airstrike Rocket.mdl";
     static FireCrescent             = path + "Fire Crescent Tailed.mdl";
+    static TargetCircle             = path + "RedTargetCircle_00.mdl";
 }

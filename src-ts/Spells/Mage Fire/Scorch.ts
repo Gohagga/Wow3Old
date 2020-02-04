@@ -85,8 +85,8 @@ export class Scorch extends UnitConfigurable {
                         if (GetUnitCurrentOrder(caster) == 0)
                             SetUnitAnimation(caster, "stand");
                     });
-                    if (unitOrder == 0)
-                        SetUnitAnimation(caster, "spell channel");
+                    if (unitOrder != Order.ATTACK)
+                        QueueUnitAnimation(caster, "spell channel");
 
                     Interruptable.Register(caster, (orderId) => {
                         
